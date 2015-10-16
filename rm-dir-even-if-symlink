@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+#
+# Dirty hack: dir is the 2nd argument, -rf is *always* the first argument
+# Remove trailing slash
+dir=${2%/}
+
+if [ $# -eq 0 ]; then
+    echo "No arguments given, exiting"
+    exit 1
+fi
+
+
+if [ -L $dir ]; then
+    rdir=$(readlink -f $dir)
+    if [ ! -d $rdir ]; then
+	echo "$rdir not directory, exiting"
+	exit 2
+    fi
+    rm $dir
+else
+    # argument not symlink
+    rdir=$dir
+fi
+    echo "Removing $rdir ($dir)"
+    rm -rf $rdir

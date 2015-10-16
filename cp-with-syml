@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+#
+# dirty hack: -al is *always* the first argument
+
+from=$2
+to=$3
+
+if [ ! $# -eq 3 ]; then
+    echo "Not two arguments given, exiting"
+    exit 1
+fi
+
+if [ -L $from ]; then
+    fromdir=$(readlink -f $from)
+    if [ ! -d $fromdir ]; then
+	echo "$fromdir not directory, exiting"
+	exit 2
+    fi
+
+    ln -s $fromdir $to
+
+    lastpart=$(basename $from)
+    basedir=$(dirname $from)
+    datestring=$(date --iso-8601=minutes)
+
+    /bin/cp -al $fromdir $basedir/$datestring
+
+    rm $from
+    ln -s $basedir/$datestring $from
+    echo "**** $basedir/$datestring is $from"
+else
+    # first argument not symlink
+    cp -al $from $to
+fi

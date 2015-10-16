@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Create symlinks to timestamp dirnames in current directory
+
+for i in daily weekly monthly yearly;do
+#    echo $i
+    for j in $i.*;do
+	if [ -d $j ]; then
+	    n=$(date --iso-8601=minutes -d @$(stat -c %Y $j))
+	    echo "new name of $j will be $n"
+	    mv $j $n
+	    ln -s $n $j
+	else
+	    echo "$j not directory"
+	fi
+    done
+done
